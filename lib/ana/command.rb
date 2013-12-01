@@ -190,9 +190,8 @@ module Ana
         if File.exist? file_path
           remove_file(file_path, verbose: false)
           create_file(file_path, data, verbose: false)
-          say_status(:update, file_path)
         else
-          create_file(file_path, data)
+          create_file(file_path, data, verbose: false)
         end
       end
 
