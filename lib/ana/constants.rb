@@ -1,8 +1,9 @@
 module Ana
   module Scalars
     TTL = 900 # Every 900s updates the json.
-    GEM_NOT_FOUND     = 'This rubygem could not be found.'
-    GEM_VER_NOT_FOUND = 'This version could not be found.'
+    GEM_NOT_FOUND      = 'This rubygem could not be found.'
+    GEM_DOES_NOT_EXIST = 'This gem does not exist.'
+    GEM_VER_NOT_FOUND  = 'This version could not be found.'
 
     # Terminal Colour Codes
     # http://en.wikipedia.org/wiki/ANSI_escape_code

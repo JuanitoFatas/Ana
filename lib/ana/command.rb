@@ -41,7 +41,8 @@ module Ana
     # author(s), and license information.
     desc 'gem_infos (info)', 'Print Gem Informations'
     def gem_infos(gem)
-      gem_hash = check_if_gem_exist_and_get_json!(gem, type: 'gems')
+      return if gem_does_not_exist?(gem)
+      gem_hash = get_gem_json!(gem, type: 'gems')
       say gem_hash['info']
       say "Has been downloaded for #{colorize(gem_hash['downloads'], RED)} times!"
       say "The Latest version is #{colorize(gem_hash['version'], BLUE)}."
@@ -58,7 +59,8 @@ module Ana
     # type: 'runtime', 'development'
     desc 'gem_dependencies (deps)', 'Print Gem Dependencies (runtime / development).'
     def gem_dependencies(gem, type='runtime')
-      gem_hash = check_if_gem_exist_and_get_json!(gem, type: 'gems')
+      return if gem_does_not_exist?(gem)
+      gem_hash = get_gem_json!(gem, type: 'gems')
       gem_hash['dependencies'][type].each do |arr|
         puts "#{arr['name'].ljust(20)} #{arr['requirements']}"
       end
@@ -67,15 +69,21 @@ module Ana
     # Return latest version of given gem.
     desc 'latest_version (v)', 'latest version of a gem.'
     def latest_version(gem)
-      gem_hash = check_if_gem_exist_and_get_json!(gem, type: 'gems')
-      say("Latest version is #{gem_hash['version']}.", :blue)
+      return if gem_does_not_exist?(gem)
+      gem_hash = get_gem_json!(gem, type: 'gems')
+      say("Latest version is #{gem_hash['version']}.", :blue) if gem_hash
     end
 
     # List versions of a given Gem, default will only list last 10 versions.
     # You can pass all or a fairly large number to display all versions.
     desc 'versions (vs)', 'List versions of a gem.'
     def versions(gem, count=10)
-      gem_hash = check_if_gem_exist_and_get_json!(gem, type: 'versions')
+      if number?(count.to_s) == false
+        say "#{count} is not a number :("
+        return
+      end
+      return if gem_does_not_exist?(gem)
+      gem_hash = get_gem_json!(gem, type: 'versions')
       if count == 'all' || count.to_i > gem_hash.count
         count = gem_hash.count
       end
@@ -85,10 +93,16 @@ module Ana
       end
     end
 
+    # FIXME should print info related to that version
     # Find if a given version of Gem exists.
     desc 'version exist?', 'Find if a given version exists.'
-    def find_version(gem, ver)
-      gem_hash = check_if_gem_exist_and_get_json!(gem, type: 'versions')
+    def find_version(gem, ver='no-input')
+      return if gem_does_not_exist?(gem)
+      if ver == 'no-input'
+        say 'Please specify a version'
+        return
+      end
+      gem_hash = get_gem_json!(gem, type: 'versions')
       versions = gem_hash.collect { |x| x['number'] }
       if versions.include? ver
         gem_infos gem
@@ -100,12 +114,14 @@ module Ana
     # Search if a given Gem exists? If exists, return the latest version of it.
     desc 'search (s)', '(Exact) Search for a gem.'
     def search(gem)
-      latest_version(gem) if gem_exist?(gem)
+      return if gem_does_not_exist?(gem)
+      latest_version(gem)
     end
 
     # Invoke system `gem search -r`
     desc 'fuzzy_search (fs)', 'Fuzzy search for a Gem'
     def fuzzy_search(gem)
+      return if gem_does_not_exist?(gem)
       system("gem search -r #{Shellwords.escape gem}")
     end
 
@@ -113,7 +129,8 @@ module Ana
     # Available URI types could be found in Ana::Scalars::URI_TYPE.
     desc 'open (o)', 'Open gem doc directly via open command.'
     def open(gem, open_type='doc')
-      gem_hash = check_if_gem_exist_and_get_json!(gem, type: 'gems')
+      return if gem_does_not_exist?(gem)
+      gem_hash = get_gem_json!(gem, type: 'gems')
       url = if URI_TYPE.keys.include? open_type
               skip = false
               gem_hash[URI_TYPE[open_type]]
@@ -129,6 +146,7 @@ module Ana
     # Download a given Gem.
     desc 'download (dl)', 'Download a Gem'
     def download(gem)
+      return if gem_does_not_exist?(gem)
       open gem, 'lib'
     end
 
@@ -151,28 +169,55 @@ module Ana
         print "\n"
       end
 
-      # Check if a Gem exists, if exists load the json and return.
-      # The real load will execute every TTL (900) seconds.
-      # type: 'versions', 'gems'
-      # @return [Hash]
-      def check_if_gem_exist_and_get_json!(gem, type: 'versions')
-        if gem_exist?(gem)
-          gem_uri = URI("https://rubygems.org/api/v1/#{type}/#{gem}.json")
-          gem_json_file_path = full_path("~/.gemjsons/#{gem}/#{type}.json")
-          unless File.exist?(gem_json_file_path) && fresh?(gem_json_file_path)
+      # Download json if it hasn't been downloaded
+      # or older than 900s.
+      # return Hash parsed from gem's (gems / version) json
+      def get_gem_json!(gem, type: 'versions')
+        gem_json_file_path = full_path("~/.gemjsons/#{gem}/#{type}.json")
+        gem_uri = URI.parse(URI.encode("https://rubygems.org/api/v1/#{type}/#{gem}.json", "[]"))
+        if !File.exist?(gem_json_file_path)
+          create_file(gem_json_file_path, Net::HTTP.get(gem_uri), verbose: false)
+        else
+          if not_fresh?(gem_json_file_path)
             remove_and_create_file!(gem_json_file_path, Net::HTTP.get(gem_uri))
           end
-        else
-          print_gem_not_found!
         end
-        return JSON.parse(IO.read(gem_json_file_path))
+        return JSON.parse(IO.read(gem_json_file_path)) || nil
       end
 
-      # Check if a given gem exists?
+      # Returns true if given gem exists.
       def gem_exist?(gem)
-        uri = URI "https://rubygems.org/api/v1/gems/#{gem}.json"
-        return false if GEM_NOT_FOUND == Net::HTTP.get(uri)
-        return true
+        uri = URI.parse(URI.encode("https://rubygems.org/api/v1/gems/#{gem}.json", "[]"))
+        response = Net::HTTP.get(uri)
+        if response.include? 'page not found'
+          say "#{gem}, typo?"
+          return false
+        end
+        case response
+        when GEM_NOT_FOUND
+          print_gem_not_found!
+          return false
+        when GEM_DOES_NOT_EXIST
+          print_gem_does_not_exist!
+          return false
+        else
+          return true
+        end
+      end
+
+      # Returns true if given gem does not exist
+      def gem_does_not_exist?(gem)
+        !gem_exist?(gem)
+      end
+
+      def number?(str)
+        return false if(str =~ /\A[-+]?[0-9]*\.?[0-9]+\z/).nil?
+        true
+      end
+
+      # Print Gem does not exist message.
+      def print_gem_does_not_exist!
+        say(GEM_DOES_NOT_EXIST, :red)
       end
 
       # Print Gem version not found message.
@@ -201,8 +246,8 @@ module Ana
       end
 
       # Check if a file is has been changed within 900s?
-      def fresh?(file_path)
-        access_time(file_path) < TTL
+      def not_fresh?(file_path)
+        access_time(file_path) > TTL
       end
 
       # Return a file's change time with respect to current time.
