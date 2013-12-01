@@ -109,9 +109,6 @@ via [launchy][2] gem.
 
 #### Download a Gem
 
-Available URI: Project Page, Homepage, Wiki, Documentation, Mailing List,
-               Source Code, Bug Tracker.
-
 ```bash
 $ ana dl rails
 will open the browser and download rails gem.
@@ -125,7 +122,7 @@ Ruby >= 2.0
 
 * Add tests.
 * Download via wget/curl.
-* Download gem and its runtime dependencies in a zip/tar or in batch.
+* Download gem and its runtime dependencies in a zip/tar or in files.
 
 ## Contributing
 
