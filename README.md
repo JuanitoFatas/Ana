@@ -2,7 +2,7 @@
 
 Ana knows a lot of things about RubyGems.
 
-Yet another Ruby wrapper for the [RubyGems.org][1] API.
+A command-line tool for [RubyGems.org][1].
 
 ## Installation
 

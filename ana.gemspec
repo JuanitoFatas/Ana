@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Juanito Fatas']
   spec.email         = ['katehuang0320@gmail.com']
   spec.summary       = %q{Ana knows a lot about RubyGems.}
-  spec.description   = %q{Yet another RubyGems.org API wrapper in Ruby.}
+  spec.description   = %q{A command-line tool for https://rubygems.org/}
   spec.homepage      = 'https://github.com/JuanitoFatas/Ana'
   spec.license       = 'MIT'
 
