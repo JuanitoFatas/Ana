@@ -1,4 +1,5 @@
 class String
+  # A string is present if it's not a blank string.
   def present?
     !blank?
   end
