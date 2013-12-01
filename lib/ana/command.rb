@@ -129,7 +129,7 @@ module Ana
     # FIXME: Only print the uri type if it is not null
     # Open the URIs of a given Gem. Default open the home page.
     # Available URI types could be found in Ana::Scalars::URI_TYPE.
-    desc 'open (o)', 'Open gem's uris directly via open command.'
+    desc 'open (o)', "Open gem's uris directly via open command."
     def open(gem, open_type='home')
       return if gem_does_not_exist?(gem)
       gem_hash = get_gem_json!(gem, type: 'gems')
@@ -140,9 +140,9 @@ module Ana
               say "#{open_type} is not a valid type :( \n"
               print_valid_uri_open_types!
               skip = true
-              gem_hash[URI_TYPE[type]]
             end
       Launchy.open(url) if url.present? && skip == false
+      say "Nothing to open, this gem probably does not have #{open_type} page" if url.blank? || skip
     end
 
     # Download a given Gem.
