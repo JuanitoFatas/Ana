@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require __dir__ + "/../lib/ana"
+Ana::Command.start
