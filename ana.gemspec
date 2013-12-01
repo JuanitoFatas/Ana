@@ -22,6 +22,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'thor',    '~> 0.18.1'
   spec.add_dependency 'launchy', '~> 2.4.2'
+  spec.add_dependency 'activesupport', '~> 4.0.1'
 
   spec.add_development_dependency 'bundler', '>= 1.4'
   spec.add_development_dependency 'rake',    '>= 10.1.0'
