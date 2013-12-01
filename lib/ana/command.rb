@@ -80,7 +80,7 @@ module Ana
         count = gem_hash.count
       end
       say("Last #{count} versions of #{gem} are...")
-      [*0..count-1].each do |n|
+      [*0..count.to_i-1].each do |n|
         say("#{gem_hash[n]['built_at'][0..9]} : #{gem_hash[n]['number']}")
       end
     end
