@@ -1,4 +1,4 @@
-# Ana
+# Ana :sparkling_heart: :yellow_heart: :blue_heart: :purple_heart: :green_heart: :heart: :gift_heart:
 
 Ana knows a lot of things about RubyGems.
 
