@@ -8,6 +8,26 @@ A command-line tool for [RubyGems.org][1].
 
     $ gem install ana
 
+## List of Command and its alias
+
+```bash
+$ ana command args
+```
+
+|command|alias|purpose|
+|----|----|----|
+| `version` | `-v`| Returns the version of Ana. |
+| `version` | `--version`| Returns the version of Ana. |
+| `gem_infos` | `info` | Get information of a RubyGem. |
+| `gem_dependencies` | `deps` | List Runtime/Development Dependencies of a RubyGem. |
+| `latest_version` | `lv` | Return latest version of a RubyGem. |
+| `versions` | `vs` | Return (default last 10) versions of a RubyGem. |
+| `find_version` | `fv` | Find if a RubyGem has given version. |
+| `search` | `s` | Exact Search a RubyGem with given name. |
+| `fuzzy_search` | `fs` | fuzzy search a gem via `gem search -r` |
+| `open` | `o` | Open a RubyGem's URI: homepage, doc, wiki...etc. |
+| `download` | `dl` | Download a RubyGem in browser. |
+
 ## Usage
 
 Type `ana` to get some help:
