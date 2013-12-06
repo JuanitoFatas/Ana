@@ -68,7 +68,7 @@ module Ana
     end
 
     # Return latest version of given gem.
-    desc 'latest_version (v)', 'latest version of a gem.'
+    desc 'latest_version (lv)', 'latest version of a gem.'
     def latest_version(gem)
       return if gem_does_not_exist?(gem)
       gem_hash = get_gem_json!(gem, type: 'gems')
@@ -96,7 +96,7 @@ module Ana
 
     # FIXME should print info related to that version
     # Find if a given version of Gem exists.
-    desc 'version exist?', 'Find if a given version exists.'
+    desc 'find_version (fv)', 'Find if a given version exists.'
     def find_version(gem, ver='no-input')
       return if gem_does_not_exist?(gem)
       if ver == 'no-input'
