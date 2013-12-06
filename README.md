@@ -14,7 +14,7 @@ A command-line tool for [RubyGems.org][1].
 $ ana command args
 ```
 
-|command|alias|purpose|
+|Command|Alias|Purpose|
 |----|----|----|
 | `version` | `-v`| Returns the version of Ana. |
 | `version` | `--version`| Returns the version of Ana. |
@@ -24,7 +24,7 @@ $ ana command args
 | `versions` | `vs` | Return (default last 10) versions of a RubyGem. |
 | `find_version` | `fv` | Find if a RubyGem has given version. |
 | `search` | `s` | Exact Search a RubyGem with given name. |
-| `fuzzy_search` | `fs` | fuzzy search a gem via `gem search -r` |
+| `fuzzy_search` | `fs` | Fuzzy search a gem via `gem search -r`. |
 | `open` | `o` | Open a RubyGem's URI: homepage, doc, wiki...etc. |
 | `download` | `dl` | Download a RubyGem in browser. |
 
