@@ -8,6 +8,18 @@ A command-line tool for [RubyGems.org][1].
 
     $ gem install ana
 
+and `init` Ana:
+
+    $ ana init
+
+It will create a folder under your `$HOME` directory.
+
+This is for caching the json files that returned by RubyGems.org.
+
+If unfortunately you want to uninstall Ana, please remove this directory:
+
+    $ rm -rf ~/.gemjsons
+
 ## List of Command and its alias
 
 ```bash
