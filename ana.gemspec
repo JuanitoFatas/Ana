@@ -13,9 +13,8 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/JuanitoFatas/Ana'
   spec.license       = 'MIT'
 
-  spec.files         = `git ls-files`.split($/)
+  spec.files         = %w(bin/ana README.md ana.gemspec LICENSE Rakefile) + Dir.glob('lib/**/*.rb')
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
   spec.metadata['allowed_push_host'] = 'https://rubygems.org'
